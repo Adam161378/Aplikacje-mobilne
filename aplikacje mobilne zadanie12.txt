@@ -1,3 +1,4 @@
+1.
 xml:<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -239,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 -----------------------------------------------------------------------------------------
+2.
 package com.example.newaplication;
 
 import android.os.Bundle;
@@ -318,6 +320,73 @@ Toast.makeText(this, wiadomosc, Toast.LENGTH_SHORT).show();
         />
 
 </LinearLayout>
+----------------------------------------------------------------------------------------------------
+3.
+java:
+Button buttonClear = findViewById(R.id.button_clear);
+        buttonClear.setOnClickListener(v -> {
+            CheckBox cbSer = findViewById(R.id.checkboxSer);
+            CheckBox cbSzynka = findViewById(R.id.checkboxSzynka);
+            CheckBox cbPieczarki = findViewById(R.id.checkboxPieczarki);
+            cbSer.setChecked(false);
+            cbSzynka.setChecked(false);
+            cbPieczarki.setChecked(false);
+xml:
+<Button
+    android:id="@+id/button_clear"
+    android:text="Wyczyść formularz"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+    />
+--------------------------------------------------------------------------------------------------------
+4.
+java:
+ Button przyciskWeryfikacji = findViewById(R.id.przyciskWeryfikacji);
+        przyciskWeryfikacji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText poleWiek = findViewById(R.id.poleWprowadzaniaWieku);
+                TextView tekstWynik = findViewById(R.id.tekstWynikowy);
+                String wiekJakoTekst = poleWiek.getText().toString();
 
+                if (!wiekJakoTekst.isEmpty()) {
+                    int wiek = Integer.parseInt(wiekJakoTekst);
+                    if (wiek >= 18) {
+                        tekstWynik.setText("Użytkownik jest osobą pełnoletnią.");
+                    } else {
+                        tekstWynik.setText("Użytkownik nie jest osobą pełnoletnią.");
+                    }
+                } else {
+                    tekstWynik.setText("Proszę wpisać wiek.");
+                }
+            }
+        });
+xml:
+ <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Podaj swój wiek:"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/poleWprowadzaniaWieku"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="np. 18"
+        android:inputType="number" 
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weryfikuj"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tekstWynikowy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:layout_marginTop="24dp"/>
 
 
