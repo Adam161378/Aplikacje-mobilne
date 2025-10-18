@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void aktualizujTekst(String wiadomosc){
-return;
+Toast.makeText(this, wiadomosc, Toast.LENGTH_SHORT).show();
     }
 }
 <?xml version="1.0" encoding="utf-8"?>
@@ -318,5 +318,6 @@ return;
         />
 
 </LinearLayout>
+
 
 
