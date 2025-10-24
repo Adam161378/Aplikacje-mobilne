@@ -1,0 +1,409 @@
+java:
+package com.example.moja_aplikacja;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+
+public class MainActivity extends AppCompatActivity {
+
+    private final double CENA_MALA = 20.0;
+    private final double CENA_SREDNIA = 30.0;
+    private final double CENA_DUZA = 40.0;
+    private final double CENA_DODATKU = 3.0;
+    private final double CENA_SOSU = 2.0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Checkbox od zniżki
+        CheckBox znizka = findViewById(R.id.znizka);
+        znizka.setOnClickListener(v -> {
+            aktualizujCene(v);
+        });
+
+        Spinner spinnerCiasto = findViewById(R.id.ciastoSpinner);
+        spinnerCiasto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                aktualizujCene(view);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+
+        //Czyszczenie formularza
+        Button czyszczenieLambda = findViewById(R.id.wyczysc);
+        RadioGroup radioGroupRozmiar = findViewById(R.id.radioGroupRozmiar);
+        RadioGroup radioGroupSos = findViewById(R.id.radioGroupSos);
+        CheckBox checkboxPelnoletni = findViewById(R.id.checkboxPelnoletni);
+        TextView tekstCenaBazowa = findViewById(R.id.tekstCenaBazowa);
+        TextView tekstCenaKoncowa = findViewById(R.id.tekstCenaKoncowa);
+        TextView tekstPodsumowanie = findViewById(R.id.tekstPodsumowanie);
+        CheckBox ser = findViewById(R.id.checkboxSer);
+        CheckBox szynka = findViewById(R.id.checkboxSzynka);
+        CheckBox pieczarki = findViewById(R.id.checkboxPieczarki);
+
+        czyszczenieLambda.setOnClickListener(v -> {
+            //Zniżka
+            znizka.setChecked(false);
+            //Rozmiar
+            radioGroupRozmiar.check(R.id.radioMala);
+            //Sos
+            radioGroupSos.check(R.id.radioBezSosu);
+            //Pełnoletność
+            checkboxPelnoletni.setChecked(false);
+            //Ceny
+            tekstCenaBazowa.setText("");
+            tekstCenaKoncowa.setText("");
+            tekstPodsumowanie.setText("");
+            //Dodatki
+            ser.setChecked(false);
+            szynka.setChecked(false);
+            pieczarki.setChecked(false);
+        });
+    }
+
+    // Cena bazowa w zależności od rozmiaru
+    private double getCenaBazowa() {
+        RadioGroup radioGroupRozmiar = findViewById(R.id.radioGroupRozmiar);
+        int wybranyRozmiarId = radioGroupRozmiar.getCheckedRadioButtonId();
+
+        if (wybranyRozmiarId == R.id.radioMala) {
+            return CENA_MALA;
+        } else if (wybranyRozmiarId == R.id.radioSrednia) {
+            return CENA_SREDNIA;
+        } else {
+            return CENA_DUZA;
+        }
+    }
+
+    // Aktualizacja ceny
+    public void aktualizujCene(View view) {
+        double cenaBazowa = getCenaBazowa();
+        double cenaKoncowa = cenaBazowa;
+
+        // --- Rozmiar ---
+        RadioGroup radioGroupRozmiar = findViewById(R.id.radioGroupRozmiar);
+        int wybranyRozmiarId = radioGroupRozmiar.getCheckedRadioButtonId();
+        String wybranyRozmiarTekst;
+
+        if (wybranyRozmiarId == R.id.radioMala) {
+            wybranyRozmiarTekst = "Mała";
+        } else if (wybranyRozmiarId == R.id.radioSrednia) {
+            wybranyRozmiarTekst = "Średnia";
+        } else {
+            wybranyRozmiarTekst = "Duża";
+        }
+
+        // --- Dodatki ---
+        CheckBox ser = findViewById(R.id.checkboxSer);
+        CheckBox szynka = findViewById(R.id.checkboxSzynka);
+        CheckBox pieczarki = findViewById(R.id.checkboxPieczarki);
+
+        String dodatkiTekst = "";
+
+        if (ser.isChecked()) {
+            cenaKoncowa += CENA_DODATKU;
+            dodatkiTekst += "• Dodatkowy ser\n";
+        }
+        if (szynka.isChecked()) {
+            cenaKoncowa += CENA_DODATKU;
+            dodatkiTekst += "• Szynka\n";
+        }
+        if (pieczarki.isChecked()) {
+            cenaKoncowa += CENA_DODATKU;
+            dodatkiTekst += "• Pieczarki\n";
+        }
+        if (dodatkiTekst.equals("")) {
+            dodatkiTekst = "Brak dodatków";
+        }
+
+        // --- Sos (switch na tagi) ---
+        RadioGroup sosGroup = findViewById(R.id.radioGroupSos);
+        int wybranySosId = sosGroup.getCheckedRadioButtonId();
+        RadioButton wybranySos = findViewById(wybranySosId);
+
+        String sosTag = (String) wybranySos.getTag();
+        String wybranySosTekst;
+
+        switch (sosTag) {
+            case "czosnkowy":
+                wybranySosTekst = "Sos czosnkowy";
+                cenaKoncowa += CENA_SOSU;
+                break;
+            case "pomidorowy":
+                wybranySosTekst = "Sos pomidorowy";
+                cenaKoncowa += CENA_SOSU;
+                break;
+            case "bez_sosu":
+            default:
+                wybranySosTekst = "Bez sosu";
+                break;
+        }
+
+        // --- Rodzaj ciasta --
+        Spinner spinnerCiasto = findViewById(R.id.ciastoSpinner);
+        int wybranaPozycjaCiasta = spinnerCiasto.getSelectedItemPosition();
+
+        switch(wybranaPozycjaCiasta){
+            case 0:
+                break;
+            case 1:
+                cenaKoncowa += 2.0;
+                break;
+            case 2:
+                cenaKoncowa += 4.0;
+                break;
+        }
+
+        // --- Zniżka ---
+        CheckBox znizka = findViewById(R.id.znizka);
+        if (znizka.isChecked()) {
+            cenaKoncowa *= 0.9; // 10% zniżki
+            Toast.makeText(this, "Zastosowano rabat 10%", Toast.LENGTH_SHORT).show();
+        }
+
+        // --- Aktualizacja tekstów ---
+        TextView tekstCenaBazowa = findViewById(R.id.tekstCenaBazowa);
+        TextView tekstCenaKoncowa = findViewById(R.id.tekstCenaKoncowa);
+        TextView tekstPodsumowanie = findViewById(R.id.tekstPodsumowanie);
+
+        String wybraneCiasto = spinnerCiasto.getSelectedItem().toString();
+
+        tekstCenaBazowa.setText("Cena podstawowa: " + cenaBazowa + " PLN");
+        tekstCenaKoncowa.setText("Cena końcowa: " + String.format("%.2f", cenaKoncowa) + " PLN");
+
+        String podsumowanie = "Rozmiar: " + wybranyRozmiarTekst +
+                "\nSos: " + wybranySosTekst +
+                "\nDodatki:\n" + dodatkiTekst + "\nCiasto: " + wybraneCiasto;
+
+        tekstPodsumowanie.setText(podsumowanie);
+    }
+
+    // --- Pełnoletni ---
+    public void sprawdzPelnoletnosc(View view) {
+        CheckBox pelnoletni = findViewById(R.id.checkboxPelnoletni);
+        Button zamow = findViewById(R.id.przyciskZamow);
+        zamow.setEnabled(pelnoletni.isChecked());
+    }
+
+
+
+}
+--------------------------------------------------------------
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center">
+
+    <!-- Tytuł -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Konfigurator Pizzy"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Rozmiar pizzy -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz rozmiar:"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupRozmiar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radioMala"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mała (20 PLN)"
+            android:onClick="aktualizujCene" />
+
+        <RadioButton
+            android:id="@+id/radioSrednia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Średnia (30 PLN)"
+            android:checked="true"
+            android:onClick="aktualizujCene" />
+
+        <RadioButton
+            android:id="@+id/radioDuza"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Duża (40 PLN)"
+            android:onClick="aktualizujCene" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tekstCenaBazowa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cena podstawowa: 30.00 PLN"
+        android:textSize="18sp"
+        android:layout_marginTop="10dp" />
+
+    <!-- Dodatki -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz dodatki (+3 PLN każdy):"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp" />
+
+    <CheckBox
+        android:id="@+id/checkboxSer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dodatkowy ser"
+        android:onClick="aktualizujCene" />
+
+    <CheckBox
+        android:id="@+id/checkboxSzynka"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Szynka"
+        android:onClick="aktualizujCene" />
+
+    <CheckBox
+        android:id="@+id/checkboxPieczarki"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pieczarki"
+        android:onClick="aktualizujCene" />
+
+    <!-- Sosy -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz sos:"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupSos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radioCzosnkowy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sos czosnkowy (+2 PLN)"
+            android:tag="czosnkowy"
+            android:onClick="aktualizujCene" />
+
+        <RadioButton
+            android:id="@+id/radioPomidorowy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sos pomidorowy (+2 PLN)"
+            android:tag="pomidorowy"
+            android:onClick="aktualizujCene" />
+
+        <RadioButton
+            android:id="@+id/radioBezSosu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bez sosu"
+            android:tag="bez_sosu"
+            android:checked="true"
+            android:onClick="aktualizujCene" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz ciasto:"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+
+    <Spinner
+        android:id="@+id/ciastoSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/rodzaj_ciasta"/>
+
+    <TextView
+        android:id="@+id/tekstCenaKoncowa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cena końcowa: 30.00 PLN"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/tekstPodsumowanie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Brak dodatków"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp" />
+
+    <!-- Pełnoletność -->
+    <CheckBox
+        android:id="@+id/checkboxPelnoletni"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mam ukończone 18 lat"
+        android:onClick="sprawdzPelnoletnosc"
+        android:layout_marginTop="20dp" />
+
+    <!--Zniżka studencka (-10%) -->
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/znizka"
+        android:text="Zniżka studencka(-10%)"
+        android:onClick="dodajZnizke"/>
+
+    <!-- Przycisk Zamów -->
+    <Button
+        android:id="@+id/przyciskZamow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zamów"
+        android:enabled="false"
+        android:onClick="zlozZamowienie"
+        android:layout_marginTop="10dp" />
+
+    <!-- Czyszczenie formularza -->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wyczyść formularz"
+        android:id="@+id/wyczysc"
+        android:onClick="wyczyscFormularz"/>
+</LinearLayout>
+-----------------------------------------
+string.xml:
+<resources>
+    <string name="app_name">pizzaapp</string>
+    <string-array name="rodzaj_ciasta">
+        <item>Cienkie</item>
+        <item>Grube (+2.00 PLN)</item>
+        <item>Pełnoziarniste (+4.00 PLN)</item>
+    </string-array>
+</resources>
+
+
