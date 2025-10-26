@@ -1,0 +1,70 @@
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvPanelLogowania"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Panel Logowania"
+        style="@style/NaglowekEkranu"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnAnuluj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Anuluj"
+        style="@style/PrzyciskGlowny.Anuluj"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Wpisz login"
+        android:textColorHint="@android:color/darker_gray"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+
+
+
+</LinearLayout>
+
+colors:
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NaglowekEkranu">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@android:color/holo_blue_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">16dp</item>
+    </style>
+    <style name="PrzyciskGlowny.Anuluj" parent="PrzyciskGlowny">
+        <color name="przycisk_szary">#B0B0B0</color>
+
+        <item name="android:backgroundTint">@color/przycisk_szary</item>
+    </style>
+
+    <style name="PoleTekstowe">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:hint">Wpisz login</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+    </style>
+
+</resources>
