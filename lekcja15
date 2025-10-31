@@ -1,0 +1,141 @@
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/zdjecieProfilowe"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/avatar" />
+    <TextView
+        style="@style/NaglowekEkranu"
+        android:text="Panel Ustawień" />
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Włącz tryb PRO"
+        android:textSize="18sp"
+        android:checked="true" />
+    <Button
+        android:id="@+id/button1"
+        style="@style/PrzyciskGlowny"
+        android:text="Zapisz ustawienia" />
+
+</LinearLayout>
+
+
+java:
+package com.example.styleandthemelab;
+
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import android.content.Intent;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        Button przyciskZapisz = findViewById(R.id.button1); // Wstaw ID swojego przycisku
+        przyciskZapisz.setOnClickListener(v -> {
+            // Ten kod uruchamia drugą aktywność
+            Intent intent = new Intent(MainActivity.this, DrugaActivity.class);
+            startActivity(intent);
+        });
+    }
+    // W onCreate w MainActivity.java
+
+}
+colors:
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_primary">#0D47A1</color> <!-- Ciemnoniebieski -->
+    <color name="brand_secondary">#FF6F00</color> <!-- Pomarańczowy -->
+    <color name="text_primary">#212121</color> <!-- Ciemnoszary dla tekstu -->
+    <color name="background_light">#FAFAFA</color> <!-- Jasnoszare tło -->
+    <color name="white">#FFFFFF</color>
+    <color name="my_activated_color">#EF9073</color> <!-- Pomarańczowy -->
+    <color name="black">#000000</color>
+    <color name="dark_gray">#121212</color>
+    <color name="white">#FFFFFF</color>
+    <color name="my_activated_color_dark">#FF8A50</color> <!-- np. jasnopomarańczowy -->
+
+
+</resources>
+night/themes:
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Motyw nocny aplikacji -->
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/dark_gray</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorControlActivated">@color/my_activated_color_dark</item>
+    </style>
+
+    <!-- Styl nagłówka ekranu -->
+    <style name="NaglowekEkranu">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">24dp</item>
+    </style>
+
+    <!-- Styl przycisku głównego -->
+    <style name="PrzyciskGlowny">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">12dp</item>
+        <!-- Kolor tła dziedziczony z colorPrimary -->
+    </style>
+</resources>
+themes:
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.StyleAndThemeLab" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+    <resources>
+        <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+            <item name="colorPrimary">@color/purple_500</item>
+            <item name="colorPrimaryVariant">@color/purple_700</item>
+            <item name="colorOnPrimary">@color/white</item>
+            <item name="android:windowBackground">@color/white</item>
+            <item name="android:textColor">@color/black</item>
+        </style>
+    </resources>
+    <resources>
+        <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+            <item name="colorPrimary">@color/purple_500</item>
+            <item name="colorPrimaryVariant">@color/purple_700</item>
+            <item name="colorOnPrimary">@color/white</item>
+            <item name="android:windowBackground">@color/white</item>
+            <item name="android:textColor">@color/black</item>
+        </style>
+    </resources>
+
+
+    <style name="Theme.StyleAndThemeLab" parent="Base.Theme.StyleAndThemeLab" />
+</resources>
