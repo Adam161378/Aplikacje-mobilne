@@ -1,0 +1,201 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:id="@+id/main"
+    android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor">
+
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kalkulator Napiwków"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:shadowColor="#80000000"
+        android:paddingBottom="24dp"
+        android:layout_gravity="center_horizontal"/>
+
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kwota rachunku (zł):"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"
+            android:paddingBottom="4dp"/>
+
+        <EditText
+            android:id="@+id/Cena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:hint="Wprowadź kwotę"
+            android:padding="12dp"
+           />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wybierz procent napiwku:"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroupTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15%"
+                android:checked="false"/>
+
+            <RadioButton
+                android:id="@+id/radio20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20%"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/radio25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25%"
+                android:checked="false"/>
+        </RadioGroup>
+
+
+        <Button
+            android:id="@+id/buttonCalculate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Oblicz"
+            android:textColor="@color/buttonTextColor"
+            android:backgroundTint="@color/buttonColor"
+            android:layout_marginTop="24dp"
+            android:padding="12dp"/>
+
+
+    <TextView
+        android:id="@+id/textViewTipResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kwota napiwku: 0,00 zł"
+        android:textColor="@color/accentColor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="32dp"/>
+
+    <TextView
+        android:id="@+id/textViewTotalResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Łączna kwota: 0,00 zł"
+        android:textColor="@color/primaryLightColor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:inputType="numberDecimal"
+        android:paddingTop="12dp"/>
+
+</LinearLayout>
+---------------------------------------------------------
+package com.example.projekt;
+
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        Button oblicz = findViewById(R.id.buttonCalculate);
+        EditText poleKwota = findViewById(R.id.Cena);
+        TextView wynikNapiwek = findViewById(R.id.textViewTipResult);
+        TextView wynikCalkowity = findViewById(R.id.textViewTotalResult);
+
+        RadioButton fifthteen = findViewById(R.id.radio15);
+        RadioButton twenty = findViewById(R.id.radio20);
+        RadioButton twentyfive = findViewById(R.id.radio25);
+
+        oblicz.setOnClickListener(v -> {
+
+            String kwotaStr = poleKwota.getText().toString();
+
+            if(kwotaStr.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Proszę wprowadzić kwotę rachunku", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int kwotaInt = Integer.parseInt(kwotaStr);
+
+// Obliczenie napiwku i kwoty całkowitej
+
+            int procentNapiwku;
+
+            if(fifthteen.isChecked()) {
+                procentNapiwku = 15;
+            } else if(twenty.isChecked()) {
+                procentNapiwku = 20;
+            } else { // twentyfive
+                procentNapiwku = 25;
+            }
+
+            int kwotaNapiwku = kwotaInt * procentNapiwku / 100;
+            int kwotaCalkowita = kwotaInt + kwotaNapiwku;
+            wynikNapiwek.setText(String.format("Kwota napiwku: %.2f zł", kwotaNapiwku));
+            wynikCalkowity.setText(String.format("Łączna kwota: %.2f zł", kwotaCalkowita));
+        });
+    }
+}
+----------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#6200EE</color>
+    <color name="primaryLightColor">#BB86FC</color>
+    <color name="primaryDarkColor">#3700B3</color>
+    <color name="accentColor">#03DAC5</color>
+    <color name="textColorPrimary">#000000</color>
+    <color name="textColorSecondary">#666666</color>
+    <color name="backgroundColor">#FFF3E0</color>
+    <color name="buttonColor">#6200EE</color>
+    <color name="buttonTextColor">#FFFFFF</color>
+</resources>
