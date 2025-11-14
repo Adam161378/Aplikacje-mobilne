@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
+
 ----------------------------------------------------
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -207,3 +208,4 @@ public class MainActivity extends AppCompatActivity {
     <color name="buttonTextColor">#FFFFFF</color>
 
 </resources>
+
