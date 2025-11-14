@@ -120,6 +120,14 @@
 package com.example.projekt;
 
 import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -133,8 +141,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
-
 
 
     @Override
@@ -157,35 +163,36 @@ public class MainActivity extends AppCompatActivity {
         RadioButton twentyfive = findViewById(R.id.radio25);
 
         oblicz.setOnClickListener(v -> {
-
             String kwotaStr = poleKwota.getText().toString();
 
-            if(kwotaStr.isEmpty()) {
+            if (kwotaStr.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Proszę wprowadzić kwotę rachunku", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int kwotaInt = Integer.parseInt(kwotaStr);
+            double kwota = Double.parseDouble(kwotaStr);
 
-// Obliczenie napiwku i kwoty całkowitej
+            int procentNapiwku = 0;
 
-            int procentNapiwku;
-
-            if(fifthteen.isChecked()) {
+            if (fifthteen.isChecked()) {
                 procentNapiwku = 15;
-            } else if(twenty.isChecked()) {
+            }
+            if (twenty.isChecked()) {
                 procentNapiwku = 20;
-            } else { // twentyfive
+            }
+            if (twentyfive.isChecked()) {
                 procentNapiwku = 25;
             }
 
-            int kwotaNapiwku = kwotaInt * procentNapiwku / 100;
-            int kwotaCalkowita = kwotaInt + kwotaNapiwku;
-            wynikNapiwek.setText(String.format("Kwota napiwku: %.2f zł", kwotaNapiwku));
-            wynikCalkowity.setText(String.format("Łączna kwota: %.2f zł", kwotaCalkowita));
+            double kwotaNapiwku = kwota * procentNapiwku / 100.0;
+            double kwotaCalkowita = kwota + kwotaNapiwku;
+
+            wynikNapiwek.setText("Kwota napiwku: " + String.format("%.2f zł", kwotaNapiwku));
+            wynikCalkowity.setText("Łączna kwota: " + String.format("%.2f zł", kwotaCalkowita));
         });
     }
 }
+
 ----------------------------------------------------
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -198,4 +205,5 @@ public class MainActivity extends AppCompatActivity {
     <color name="backgroundColor">#FFF3E0</color>
     <color name="buttonColor">#6200EE</color>
     <color name="buttonTextColor">#FFFFFF</color>
+
 </resources>
