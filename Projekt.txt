@@ -1,14 +1,13 @@
 
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:id="@+id/main"
     android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor">
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -23,80 +22,111 @@
         android:paddingBottom="24dp"
         android:layout_gravity="center_horizontal"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kwota rachunku (zł):"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="16sp"
+        android:paddingBottom="4dp"/>
 
+    <EditText
+        android:id="@+id/Cena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="Wprowadź kwotę"
+        android:padding="12dp"/>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wybierz procent napiwku:"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="16sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroupTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kwota rachunku (zł):"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
-            android:paddingBottom="4dp"/>
+            android:text="15%"
+            android:checked="false"/>
 
-        <EditText
-            android:id="@+id/Cena"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:hint="Wprowadź kwotę"
-            android:padding="12dp"
-           />
-
-
-        <TextView
+        <RadioButton
+            android:id="@+id/radio20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wybierz procent napiwku:"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
-            android:paddingTop="16dp"
-            android:paddingBottom="4dp"/>
+            android:text="20%"
+            android:checked="true"/>
 
-        <RadioGroup
-            android:id="@+id/radioGroupTip"
+        <RadioButton
+            android:id="@+id/radio25"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="25%"
+            android:checked="false"/>
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/radio15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="15%"
-                android:checked="false"/>
+    <EditText
+        android:id="@+id/customTip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Własny procent (%)"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
 
-            <RadioButton
-                android:id="@+id/radio20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="20%"
-                android:checked="true"/>
+    <Switch
+        android:id="@+id/switchRoundUp"
+        android:text="Zaokrąglij w górę"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-            <RadioButton
-                android:id="@+id/radio25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="25%"
-                android:checked="false"/>
-        </RadioGroup>
+    <EditText
+        android:id="@+id/editTextLiczbaOsob"
+        android:inputType="number"
+        android:hint="Liczba osób"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
 
+    <!-- Dodano TextView dla kwoty na osobę -->
+    <TextView
+        android:id="@+id/textViewPerPerson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kwota na osobę: 0.00 zł"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="12dp"/>
 
-        <Button
-            android:id="@+id/buttonCalculate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Oblicz"
-            android:textColor="@color/buttonTextColor"
-            android:backgroundTint="@color/buttonColor"
-            android:layout_marginTop="24dp"
-            android:padding="12dp"/>
-
+    <!-- Zakomentowany przycisk, jak w oryginale -->
+    <!--        <Button-->
+    <!--            android:id="@+id/buttonCalculate"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Oblicz"-->
+    <!--            android:textColor="@color/buttonTextColor"-->
+    <!--            android:backgroundTint="@color/buttonColor"-->
+    <!--            android:layout_marginTop="24dp"-->
+    <!--            android:padding="12dp"/>-->
 
     <TextView
         android:id="@+id/textViewTipResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kwota napiwku: 0,00 zł"
+        android:text="Kwota napiwku: 0.00 zł"
         android:textColor="@color/accentColor"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -107,8 +137,8 @@
         android:id="@+id/textViewTotalResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Łączna kwota: 0,00 zł"
-        android:textColor="@color/primaryLightColor"
+        android:text="Łączna kwota: 0.00 zł"
+        android:textColor="@color/textColorPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"
@@ -116,21 +146,17 @@
         android:paddingTop="12dp"/>
 
 </LinearLayout>
+
 ---------------------------------------------------------
 package com.example.projekt;
 
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import android.os.Bundle;
-import android.widget.Button;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,57 +168,124 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EditText poleKwota, customTip, poleLiczbaOsob;
+    private TextView wynikNapiwek, wynikCalkowity, wynikNaOsobe;
+    private RadioButton fifthteen, twenty, twentyfive;
+    private RadioGroup radioGroupTip;
+    private Switch switchRoundUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // Inicjalizacja widoków (tylko pola klasy)
+        poleKwota = findViewById(R.id.Cena);
+        wynikNapiwek = findViewById(R.id.textViewTipResult);
+        wynikCalkowity = findViewById(R.id.textViewTotalResult);
+        wynikNaOsobe = findViewById(R.id.textViewPerPerson);
+
+        fifthteen = findViewById(R.id.radio15);
+        twenty = findViewById(R.id.radio20);
+        twentyfive = findViewById(R.id.radio25);
+        customTip = findViewById(R.id.customTip);
+        radioGroupTip = findViewById(R.id.radioGroupTip);
+        switchRoundUp = findViewById(R.id.switchRoundUp);
+        poleLiczbaOsob = findViewById(R.id.editTextLiczbaOsob);
+
+        // Listener EditText (wszystkie razem)
+        TextWatcher simpleWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { przelicz(); }
+            @Override public void afterTextChanged(Editable s) {}
+        };
+
+        poleKwota.addTextChangedListener(simpleWatcher);
+        customTip.addTextChangedListener(simpleWatcher);
+        poleLiczbaOsob.addTextChangedListener(simpleWatcher);
+
+        // Listener RadioGroup
+        radioGroupTip.setOnCheckedChangeListener((group, checkedId) -> przelicz());
+
+        // Listener Switch
+        switchRoundUp.setOnCheckedChangeListener((buttonView, isChecked) -> przelicz());
+
+        // EdgeToEdge padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button oblicz = findViewById(R.id.buttonCalculate);
-        EditText poleKwota = findViewById(R.id.Cena);
-        TextView wynikNapiwek = findViewById(R.id.textViewTipResult);
-        TextView wynikCalkowity = findViewById(R.id.textViewTotalResult);
+    }
 
-        RadioButton fifthteen = findViewById(R.id.radio15);
-        RadioButton twenty = findViewById(R.id.radio20);
-        RadioButton twentyfive = findViewById(R.id.radio25);
+    private void przelicz() {
+        String kwotaStr = poleKwota.getText().toString();
+        if (kwotaStr.isEmpty()) {
+            wynikNapiwek.setText("Kwota napiwku: 0.00 zł");
+            wynikCalkowity.setText("Łączna kwota: 0.00 zł");
+            wynikNaOsobe.setText("Kwota na osobę: 0.00 zł");
+            return;
+        }
 
-        oblicz.setOnClickListener(v -> {
-            String kwotaStr = poleKwota.getText().toString();
+        double kwota;
+        try { kwota = Double.parseDouble(kwotaStr); }
+        catch (NumberFormatException e) {
+            Toast.makeText(this, "Nieprawidłowa kwota", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            if (kwotaStr.isEmpty()) {
-                Toast.makeText(MainActivity.this, "Proszę wprowadzić kwotę rachunku", Toast.LENGTH_SHORT).show();
+        double procentNapiwku = 0.0;
+        String customStr = customTip.getText().toString().trim();
+        if (!customStr.isEmpty()) {
+            try { procentNapiwku = Double.parseDouble(customStr); }
+            catch (NumberFormatException e) {
+                Toast.makeText(this, "Nieprawidłowy własny procent", Toast.LENGTH_SHORT).show();
                 return;
             }
+        } else {
+            if (fifthteen.isChecked()) procentNapiwku = 15.0;
+            else if (twenty.isChecked()) procentNapiwku = 20.0;
+            else if (twentyfive.isChecked()) procentNapiwku = 25.0;
+        }
 
-            double kwota = Double.parseDouble(kwotaStr);
+        double kwotaNapiwku = kwota * procentNapiwku / 100.0;
+        double kwotaCalkowita = kwota + kwotaNapiwku;
 
-            int procentNapiwku = 0;
+        boolean roundUp = switchRoundUp.isChecked();
+        double kwotaDoPodzialu = kwotaCalkowita;
 
-            if (fifthteen.isChecked()) {
-                procentNapiwku = 15;
-            }
-            if (twenty.isChecked()) {
-                procentNapiwku = 20;
-            }
-            if (twentyfive.isChecked()) {
-                procentNapiwku = 25;
-            }
+        if (roundUp) {
+            double zaokraglonaCalkowita = Math.ceil(kwotaCalkowita);
+            double dostosowanyNapiwek = zaokraglonaCalkowita - kwota;
+            wynikNapiwek.setText(String.format("Kwota napiwku: %.2f zł / %.2f zł", kwotaNapiwku, dostosowanyNapiwek));
+            wynikCalkowity.setText(String.format("Łączna kwota: %.2f zł / %.2f zł", kwotaCalkowita, zaokraglonaCalkowita));
+            kwotaDoPodzialu = zaokraglonaCalkowita;
+        } else {
+            wynikNapiwek.setText(String.format("Kwota napiwku: %.2f zł", kwotaNapiwku));
+            wynikCalkowity.setText(String.format("Łączna kwota: %.2f zł", kwotaCalkowita));
+        }
 
-            double kwotaNapiwku = kwota * procentNapiwku / 100.0;
-            double kwotaCalkowita = kwota + kwotaNapiwku;
+        String liczbaOsobStr = poleLiczbaOsob.getText().toString();
+        if (liczbaOsobStr.isEmpty()) {
+            wynikNaOsobe.setText("Kwota na osobę: 0.00 zł");
+            return;
+        }
 
-            wynikNapiwek.setText("Kwota napiwku: " + String.format("%.2f zł", kwotaNapiwku));
-            wynikCalkowity.setText("Łączna kwota: " + String.format("%.2f zł", kwotaCalkowita));
-        });
+        int liczbaOsob;
+        try {
+            liczbaOsob = Integer.parseInt(liczbaOsobStr);
+            if (liczbaOsob <= 0) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Nieprawidłowa liczba osób", Toast.LENGTH_SHORT).show();
+            wynikNaOsobe.setText("Kwota na osobę: 0.00 zł");
+            return;
+        }
+
+        double kwotaNaOsobe = kwotaDoPodzialu / liczbaOsob;
+        wynikNaOsobe.setText(String.format("Kwota na osobę: %.2f zł", kwotaNaOsobe));
     }
 }
-
 
 ----------------------------------------------------
 <?xml version="1.0" encoding="utf-8"?>
@@ -207,5 +300,50 @@ public class MainActivity extends AppCompatActivity {
     <color name="buttonColor">#6200EE</color>
     <color name="buttonTextColor">#FFFFFF</color>
 
+
+        <color name="primaryColorNight">#BB86FC</color>
+        <color name="primaryLightColorNight">#81C784</color>
+        <color name="primaryDarkColorNight">#3700B3</color>
+        <color name="accentColorNight">#FF6F43</color>
+        <color name="textColorPrimaryNight">#FFFFFF</color>
+        <color name="textColorSecondaryNight">#AAAAAA</color>
+        <color name="backgroundColorNight">#121212</color>
+        <color name="buttonColorNight">#1976D2</color>
+        <color name="buttonTextColorNight">#FFFFFF</color>
+    </resources>
+
+
+----------------------------------
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Projekt" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Kolory główne -->
+        <item name="colorPrimary">@color/primaryColorNight</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColorNight</item>
+        <item name="colorOnPrimary">@color/buttonTextColorNight</item>
+
+        <item name="colorSecondary">@color/accentColorNight</item>
+        <item name="colorOnSecondary">@color/buttonTextColorNight</item>
+
+        <!-- Teksty -->
+        <item name="android:textColorPrimary">@color/textColorPrimaryNight</item>
+        <item name="android:textColorSecondary">@color/textColorSecondaryNight</item>
+
+        <!-- Tło okna -->
+        <item name="android:windowBackground">@color/backgroundColorNight</item>
+
+        <!-- Styl przycisku -->
+        <item name="buttonStyle">@style/ButtonStyle</item>
+    </style>
+
+    <!-- Styl przycisku -->
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/buttonColorNight</item>
+        <item name="android:textColor">@color/buttonTextColorNight</item>
+
+    </style>
 </resources>
+-----------------------------------------------
+
+
 
