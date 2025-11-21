@@ -1,0 +1,147 @@
+java
+package com.example.losowycytat;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity {
+
+    private ArrayList<Cytat> listaCytatow = new ArrayList<>();
+    private Random randomGenerator = new Random();
+
+    // Opcjonalnie do zadania 1 - uniknięcie powtórzeń
+    private int ostatniIndeks = -1;
+
+    private TextView tekstCytatu;
+    private TextView tekstAutora;
+    private Button przyciskLosuj;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Referencje do widoków
+        tekstCytatu = findViewById(R.id.tekstCytatu);
+        tekstAutora = findViewById(R.id.tekstAutora);
+        przyciskLosuj = findViewById(R.id.przyciskLosuj);
+
+        // Przygotowanie danych cytatów
+        przygotujDaneCytatow();
+
+        // Ustawienie pierwszego cytatu od razu
+        wylosujINastawNowyCytat();
+
+        // Obsługa kliknięcia przycisku
+        przyciskLosuj.setOnClickListener(v -> wylosujINastawNowyCytat());
+    }
+
+    private void przygotujDaneCytatow() {
+        listaCytatow.add(new Cytat("Być albo nie być, oto jest pytanie.", "William Szekspir"));
+        listaCytatow.add(new Cytat("Wiem, że nic nie wiem.", "Sokrates"));
+        listaCytatow.add(new Cytat("Myślę, więc jestem.", "Kartezjusz"));
+        listaCytatow.add(new Cytat("Życie jest tym, co się nam przydarza, gdy jesteśmy zajęci planowaniem.", "John Lennon"));
+        listaCytatow.add(new Cytat("Nie bój się rezygnować z dobrego, aby osiągnąć wspaniałe.", "John D. Rockefeller"));
+    }
+
+    // Metoda do losowania cytatu i ustawiania w TextView
+    private void wylosujINastawNowyCytat() {
+        if (!listaCytatow.isEmpty()) {
+            int losowyIndeks;
+
+            // Unikanie powtórzeń (zadanie 1)
+            do {
+                losowyIndeks = randomGenerator.nextInt(listaCytatow.size());
+            } while (losowyIndeks == ostatniIndeks && listaCytatow.size() > 1);
+
+            ostatniIndeks = losowyIndeks;
+
+            Cytat losowyCytat = listaCytatow.get(losowyIndeks);
+            tekstCytatu.setText(losowyCytat.tresc);
+            tekstAutora.setText("- " + losowyCytat.autor);
+        } else {
+            Toast.makeText(this, "Lista cytatów jest pusta!", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
+---------------------xml-------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tekstCytatu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cytat pojawi się tutaj"
+        android:textColor="@color/cytatTextColor"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tekstAutora"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="- Autor"
+        android:textColor="@color/autorTextColor"
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/przyciskLosuj"
+        android:layout_width="wrap_content"
+        android:textColor="@color/buttonTextColor"
+        android:layout_height="wrap_content"
+        android:text="Losuj kolejny cytat"/>
+</LinearLayout>
+-------------------------colors-------------------
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Kolory główne -->
+    <color name="primaryColor">#6200EE</color>
+    <color name="primaryLightColor">#BB86FC</color>
+    <color name="primaryDarkColor">#3700B3</color>
+    <color name="accentColor">#03DAC5</color>
+
+    <!-- Kolory tła -->
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="cardBackgroundColor">#F5F5F5</color>
+
+    <!-- Kolory tekstu -->
+    <color name="cytatTextColor">#212121</color>        <!-- ciemny szary -->
+    <color name="autorTextColor">#616161</color>        <!-- jaśniejszy szary -->
+
+    <!-- Kolor przycisku -->
+    <color name="buttonTextColor">#FFFFFF</color>
+    <color name="buttonBackgroundColor">#6200EE</color>
+
+    <!-- Kolor Toast / alert -->
+    <color name="toastColor">#FF5722</color>
+</resources>
+------------------------klasa-------------------
+package com.example.losowycytat;
+public class Cytat {
+    String tresc;
+    String autor;
+
+    public Cytat(String tresc, String autor) {
+        this.tresc = tresc;
+        this.autor = autor;
+    }
+}
+
