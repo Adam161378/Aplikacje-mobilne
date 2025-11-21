@@ -1,9 +1,8 @@
 java
-package com.example.losowycytat;
+package com.example.generator_cytatow;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Cytat> listaCytatow = new ArrayList<>();
+    private ArrayList<String> listaUlubione = new ArrayList<String>();
     private Random randomGenerator = new Random();
 
     // Opcjonalnie do zadania 1 - uniknięcie powtórzeń
@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tekstCytatu;
     private TextView tekstAutora;
     private Button przyciskLosuj;
+    private Button przyciskFavorite;
+
+    private Button przyciskUdostepnij;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +35,19 @@ public class MainActivity extends AppCompatActivity {
         tekstCytatu = findViewById(R.id.tekstCytatu);
         tekstAutora = findViewById(R.id.tekstAutora);
         przyciskLosuj = findViewById(R.id.przyciskLosuj);
+        przyciskFavorite = findViewById(R.id.przyciskFavorite);
+        przyciskUdostepnij = findViewById(R.id.przyciskUdostepnij);
 
         // Przygotowanie danych cytatów
         przygotujDaneCytatow();
 
         // Ustawienie pierwszego cytatu od razu
         wylosujINastawNowyCytat();
+        przyciskFavorite.setOnClickListener(v -> dodajDoUlubionych());
 
         // Obsługa kliknięcia przycisku
         przyciskLosuj.setOnClickListener(v -> wylosujINastawNowyCytat());
+        przyciskUdostepnij.setOnClickListener(v -> udostepnij());
     }
 
     private void przygotujDaneCytatow() {
@@ -49,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         listaCytatow.add(new Cytat("Myślę, więc jestem.", "Kartezjusz"));
         listaCytatow.add(new Cytat("Życie jest tym, co się nam przydarza, gdy jesteśmy zajęci planowaniem.", "John Lennon"));
         listaCytatow.add(new Cytat("Nie bój się rezygnować z dobrego, aby osiągnąć wspaniałe.", "John D. Rockefeller"));
+        listaCytatow.add(new Cytat("Człowiek jest tyle wart, ile może dać innym.", "Jan Paweł II"));
+        listaCytatow.add(new Cytat("Kto nie zna przeszłości, skazany jest na jej powtórzenie.", "Janusz Korczak"));
+        listaCytatow.add(new Cytat("Szczęście to jedyna rzecz, która się mnoży, gdy się ją dzieli.", "Andrzej Sapkowski"));
+        listaCytatow.add(new Cytat("Nie ma rzeczy niemożliwych dla tego, kto chce.", "Adam Mickiewicz"));
+        listaCytatow.add(new Cytat("Trzeba żyć tak, aby po nas coś zostało.", "Maria Skłodowska-Curie"));
+
     }
 
     // Metoda do losowania cytatu i ustawiania w TextView
@@ -70,69 +83,85 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Lista cytatów jest pusta!", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void dodajDoUlubionych() {
+        String cytat = tekstCytatu.getText().toString();
+
+        if (!listaUlubione.contains(cytat)) {
+            listaUlubione.add(cytat);
+            Toast.makeText(this, "Dodano do ulubionych", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Ten cytat już jest w ulubionych", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void udostepnij(){
+        Toast.makeText(this, "Kliknieto udostepnij", Toast.LENGTH_SHORT).show();
+    }
 }
+
 
 ---------------------xml-------------------------------------
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:padding="24dp"
+android:background="@color/backgroundColor"
+android:gravity="center">
+
+<TextView
+    android:id="@+id/tekstCytatu"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center">
+    android:layout_height="wrap_content"
+    android:text="Cytat pojawi się tutaj"
+    android:textColor="@color/cytatTextColor"
+    android:textSize="24sp"
+    android:textStyle="italic"
+    android:gravity="center"
+    android:layout_marginBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/tekstCytatu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cytat pojawi się tutaj"
-        android:textColor="@color/cytatTextColor"
-        android:textSize="24sp"
-        android:textStyle="italic"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+<TextView
+    android:id="@+id/tekstAutora"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="- Autor"
+    android:textColor="@color/buttonTextColor"
+    android:textSize="18sp"
+    android:gravity="center"
+    android:layout_marginBottom="32dp"/>
 
-    <TextView
-        android:id="@+id/tekstAutora"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="- Autor"
-        android:textColor="@color/autorTextColor"
-        android:textSize="18sp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"/>
+<Button
+    android:id="@+id/przyciskLosuj"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Losuj kolejny cytat"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="@color/buttonBackgroundColor"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"/>
 
-    <Button
-        android:id="@+id/przyciskLosuj"
-        android:layout_width="wrap_content"
-        android:textColor="@color/buttonTextColor"
-        android:layout_height="wrap_content"
-        android:text="Losuj kolejny cytat"/>
+<Button
+    android:id="@+id/przyciskFavorite"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Dodaj do ulubionych"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="@color/buttonBackgroundColor"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"/>
+
+<Button
+    android:id="@+id/przyciskUdostepnij"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Udostępnij"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="@color/buttonBackgroundColor"
+    android:padding="12dp"/>
 </LinearLayout>
--------------------------colors-------------------
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Kolory główne -->
-    <color name="primaryColor">#6200EE</color>
-    <color name="primaryLightColor">#BB86FC</color>
-    <color name="primaryDarkColor">#3700B3</color>
-    <color name="accentColor">#03DAC5</color>
 
-    <!-- Kolory tła -->
-    <color name="backgroundColor">#FFFFFF</color>
-    <color name="cardBackgroundColor">#F5F5F5</color>
-
-    <!-- Kolory tekstu -->
-    <color name="cytatTextColor">#212121</color>        <!-- ciemny szary -->
-    <color name="autorTextColor">#616161</color>        <!-- jaśniejszy szary -->
-
-    <!-- Kolor przycisku -->
-    <color name="buttonTextColor">#FFFFFF</color>
-    <color name="buttonBackgroundColor">#6200EE</color>
-
-    <!-- Kolor Toast / alert -->
-    <color name="toastColor">#FF5722</color>
-</resources>
 ------------------------klasa-------------------
 package com.example.losowycytat;
 public class Cytat {
@@ -144,4 +173,28 @@ public class Cytat {
         this.autor = autor;
     }
 }
+-----------color-------------
+<resources>
+    <!-- Kolory główne -->
+    <color name="primaryColor">#6200EE</color>
+    <color name="primaryLightColor">#BB86FC</color>
+    <color name="primaryDarkColor">#3700B3</color>
+    <color name="accentColor">#03DAC5</color>
+
+    <!-- Kolory tła -->
+    <color name="backgroundColor">#C2B280</color>
+    <color name="cardBackgroundColor">#F5F5F5</color>
+
+    <!-- Kolory tekstu -->
+    <color name="cytatTextColor">#212121</color>
+    <color name="autorTextColor">#616161</color>
+
+    <!-- Przyciski -->
+    <color name="buttonBackgroundColor">#009688</color>
+
+    <color name="buttonTextColor">#000000</color>
+
+    <!-- Toast -->
+    <color name="toastColor">#FF5722</color>
+</resources>
 
