@@ -1,0 +1,83 @@
+1.
+public String generujPodsumowanie() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Imię: ").append(imie).append("\n");
+        sb.append("Płeć: ").append(plec).append("\n");
+        sb.append("Rasa: ").append(rasa).append("\n");
+        sb.append("Umiejętności: ");
+        if (umiejetnosci.isEmpty()) {
+            sb.append("Brak");
+        } else {
+            for (int i = 0; i < umiejetnosci.size(); i++) {
+                sb.append(umiejetnosci.get(i));
+                if (i != umiejetnosci.size() - 1) sb.append(", ");
+            }
+        }
+        sb.append("\n");
+        sb.append("Siła: ").append(sila).append("\n");
+        sb.append("Zręczność: ").append(zrecznosc).append("\n");
+        return sb.toString();
+    }
+}
+5.CheckBox cb1 = findViewById(R.id.cb1);
+CheckBox cb2 = findViewById(R.id.cb2);
+CheckBox cb3 = findViewById(R.id.cb3);
+
+View.OnClickListener umiejetnosciListener = v -> {
+    int zaznaczone = 0;
+    if (cb1.isChecked()) zaznaczone++;
+    if (cb2.isChecked()) zaznaczone++;
+    if (cb3.isChecked()) zaznaczone++;
+
+    CheckBox clicked = (CheckBox) v;
+
+    if (zaznaczone > 2) {
+        clicked.setChecked(false);
+        Toast.makeText(getApplicationContext(), "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+    }
+};
+
+cb1.setOnClickListener(umiejetnosciListener);
+cb2.setOnClickListener(umiejetnosciListener);
+cb3.setOnClickListener(umiejetnosciListener);
+
+2.
+CheckBox[] umiejetnosciCheckBoxy = new CheckBox[] {
+    findViewById(R.id.cb1),
+    findViewById(R.id.cb2),
+    findViewById(R.id.cb3)
+};
+
+// Wspólny listener dla wszystkich CheckBoxów
+View.OnClickListener umiejetnosciListener = v -> {
+    int zaznaczone = 0;
+
+    // Liczymy wszystkie zaznaczone CheckBoxy
+    for (CheckBox cb : umiejetnosciCheckBoxy) {
+        if (cb.isChecked()) zaznaczone++;
+    }
+
+    CheckBox clicked = (CheckBox) v;
+
+    if (zaznaczone > 2) {
+        // Cofamy zaznaczenie i pokazujemy komunikat
+        clicked.setChecked(false);
+        Toast.makeText(getApplicationContext(), "Możesz wybrać maksymalnie 2 umiejętności!", Toast.LENGTH_SHORT).show();
+    }
+};
+
+// Przypisujemy listener do wszystkich CheckBoxów
+for (CheckBox cb : umiejetnosciCheckBoxy) {
+    cb.setOnClickListener(umiejetnosciListener);
+}
+
+
+
+3.
+
+
+
+4.
+
+
+
