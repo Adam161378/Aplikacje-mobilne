@@ -1,0 +1,275 @@
+java:
+package com.example.kreatorpostacirpg;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText editImie;
+    private RadioGroup radioGroupPlec;
+    private Spinner spinnerRasa;
+    private CheckBox checkWlamywanie, checkAlchemia, checkKowalstwo;
+    private Button buttonStworz, buttonResetuj;
+    private TextView textPodsumowanie;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Inicjalizacja komponentów
+        editImie = findViewById(R.id.editImie);
+        radioGroupPlec = findViewById(R.id.radioGroupPlec);
+        spinnerRasa = findViewById(R.id.spinnerRasa);
+        checkWlamywanie = findViewById(R.id.checkWlamywanie);
+        checkAlchemia = findViewById(R.id.checkAlchemia);
+        checkKowalstwo = findViewById(R.id.checkKowalstwo);
+        buttonStworz = findViewById(R.id.buttonStworz);
+        buttonResetuj = findViewById(R.id.buttonResetuj);
+        textPodsumowanie = findViewById(R.id.textPodsumowanie);
+
+        // Konfiguracja Spinnera dla ras
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.rasy_array));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRasa.setAdapter(adapter);
+
+        // Listener dla przycisku "Stwórz postać"
+        buttonStworz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Pobieranie danych
+                String imie = editImie.getText().toString().trim();
+
+                // Walidacja imienia
+                if (imie.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Wprowadź imię postaci", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Pobieranie płci
+                int selectedId = radioGroupPlec.getCheckedRadioButtonId();
+                if (selectedId == -1) {
+                    Toast.makeText(MainActivity.this, "Wybierz płeć postaci", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                RadioButton selectedRadio = findViewById(selectedId);
+                String plec = selectedRadio.getText().toString();
+
+                // Pobieranie rasy
+                String rasa = spinnerRasa.getSelectedItem().toString();
+
+                // Pobieranie umiejętności
+                ArrayList<String> umiejetnosci = new ArrayList<>();
+                if (checkWlamywanie.isChecked()) umiejetnosci.add("Włamywanie");
+                if (checkAlchemia.isChecked()) umiejetnosci.add("Alchemia");
+                if (checkKowalstwo.isChecked()) umiejetnosci.add("Kowalstwo");
+
+                // Tworzenie obiektu Postac
+                Postac postac = new Postac(imie, plec, rasa, umiejetnosci);
+
+                // Generowanie podsumowania
+                String podsumowanie = "Imię: " + postac.getImie() + "\n" +
+                        "Płeć: " + postac.getPlec() + "\n" +
+                        "Rasa: " + postac.getRasa() + "\n" +
+                        "Umiejętności: " + postac.getUmiejetnosci().toString();
+                textPodsumowanie.setText(podsumowanie);
+            }
+        });
+
+        // Listener dla przycisku "Resetuj"
+        buttonResetuj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Czyszczenie pól
+                editImie.setText("");
+                radioGroupPlec.clearCheck();
+                spinnerRasa.setSelection(0);
+                checkWlamywanie.setChecked(false);
+                checkAlchemia.setChecked(false);
+                checkKowalstwo.setChecked(false);
+                textPodsumowanie.setText("");
+            }
+        });
+    }
+}
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:id="@+id/main"
+android:layout_height="match_parent"
+android:padding="16dp">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Imię postaci:"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editImie"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Wprowadź imię"
+        android:inputType="text"
+
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Płeć:"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupPlec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/radioKobieta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kobieta" />
+
+        <RadioButton
+            android:id="@+id/radioMezczyzna"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mężczyzna" />
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rasa:"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerRasa"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Umiejętności (opcjonalne):"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <CheckBox
+        android:id="@+id/checkWlamywanie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Włamywanie" />
+
+    <CheckBox
+        android:id="@+id/checkAlchemia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alchemia" />
+
+    <CheckBox
+        android:id="@+id/checkKowalstwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kowalstwo"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/buttonStworz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stwórz postać"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/buttonResetuj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resetuj"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/textPodsumowanie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:background="#F0F0F0"
+        android:padding="8dp" />
+
+</LinearLayout>
+</ScrollView>
+posstac.java:
+package com.example.kreatorpostacirpg;
+
+import java.util.ArrayList;
+
+public class Postac {
+    String imie;
+    String plec;
+    String rasa;
+    ArrayList<String> umiejetnosci;
+
+    // Konstruktor
+    public Postac(String imie, String plec, String rasa, ArrayList<String> umiejetnosci) {
+        this.imie = imie;
+        this.plec = plec;
+        this.rasa = rasa;
+        this.umiejetnosci = umiejetnosci;
+    }
+    public String getImie() {
+        return imie;
+    }
+
+    public String getPlec() {
+        return plec;
+    }
+
+    public String getRasa() {
+        return rasa;
+    }
+
+    public ArrayList<String> getUmiejetnosci() {
+        return new ArrayList<>(umiejetnosci);
+    }
+
+}
+
+strings.xml:
+<resources>
+    <string name="app_name">KreatorPostaciRPG</string>
+    <!-- Inne stringi, jeśli istnieją -->
+    <string-array name="rasy_array">
+        <item>Człowiek</item>
+        <item>Elf</item>
+        <item>Krasnolud</item>
+        <item>Ork</item>
+    </string-array>
+</resources>
