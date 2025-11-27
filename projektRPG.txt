@@ -242,7 +242,23 @@ public class Postac {
         this.imie = imie;
         this.plec = plec;
         this.rasa = rasa;
-        this.umiejetnosci = umiejetnosci;
+        this.umiejetnosci = new ArrayList<>(umiejetnosci);
+
+        // Przyznawanie bonusów rasowych
+        switch (rasa) {
+            case "Krasnolud":
+                sila = 12;
+                zrecznosc = 8;
+                break;
+            case "Elf":
+                sila = 8;
+                zrecznosc = 12;
+                break;
+            default: // np. Człowiek
+                sila = 10;
+                zrecznosc = 10;
+                break;
+        }
     }
     public String getImie() {
         return imie;
@@ -272,4 +288,5 @@ strings.xml:
         <item>Krasnolud</item>
         <item>Ork</item>
     </string-array>
+
 </resources>
