@@ -1,0 +1,272 @@
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tekstNumerPytania"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tekstTrescPytania"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:paddingTop="12dp" />
+
+    <LinearLayout
+        android:id="@+id/kontenerOdpowiedzi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="12dp" />
+
+    <Button
+        android:id="@+id/przyciskSprawdz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sprawdź odpowiedź" />
+
+    <Button
+        android:id="@+id/przyciskReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zagraj ponownie"
+        android:visibility="gone"
+        android:paddingTop="12dp" />
+
+    <TextView
+        android:id="@+id/tekstWynik"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingTop="16dp" />
+
+</LinearLayout>
+
+----------------------------------------------
+java:
+package com.example.prostyquiz;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    ArrayList<Pytanie> listaPytan = new ArrayList<>();
+    int indeks = 0;
+    int wynik = 0;
+
+    TextView tekstNumer, tekstTresc, tekstWynik;
+    LinearLayout kontener;
+    Button przycisk, przyciskReset;
+
+    Handler handler = new Handler();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tekstNumer = findViewById(R.id.tekstNumerPytania);
+        tekstTresc = findViewById(R.id.tekstTrescPytania);
+        tekstWynik = findViewById(R.id.tekstWynik);
+        kontener = findViewById(R.id.kontenerOdpowiedzi);
+        przycisk = findViewById(R.id.przyciskSprawdz);
+        przyciskReset = findViewById(R.id.przyciskReset);
+
+        przygotujPytania();
+        wyswietlPytanie();
+
+        przycisk.setOnClickListener(view -> sprawdz());
+
+        przyciskReset.setOnClickListener(v -> reset());
+    }
+
+    private void przygotujPytania() {
+        ArrayList<String> o1 = new ArrayList<>();
+        o1.add("2");
+        o1.add("4");
+        o1.add("8");
+        listaPytan.add(new Pytanie("Ile to 2+2?", o1, 1));
+
+        ArrayList<String> o2 = new ArrayList<>();
+        o2.add("Warszawa");
+        o2.add("Kraków");
+        o2.add("Gdańsk");
+        listaPytan.add(new Pytanie("Stolica Polski:", o2, 0));
+
+        ArrayList<String> o3 = new ArrayList<>();
+        o3.add("Czerwony");
+        o3.add("Niebieski");
+        o3.add("Zielony");
+        ArrayList<Integer> poprawne = new ArrayList<>();
+        poprawne.add(1);
+        poprawne.add(2);
+        listaPytan.add(new Pytanie("Które kolory są zimne?", o3, poprawne)); // wielokrotny wybór
+    }
+
+    private void wyswietlPytanie() {
+        Pytanie p = listaPytan.get(indeks);
+
+        tekstNumer.setText("Pytanie " + (indeks + 1) + "/" + listaPytan.size());
+        tekstTresc.setText(p.tresc);
+
+        kontener.removeAllViews();
+
+        if (!p.czyWielokrotnyWybor) {
+            for (String o : p.odpowiedzi) {
+                RadioButton rb = new RadioButton(this);
+                rb.setText(o);
+                kontener.addView(rb);
+            }
+        } else {
+            for (String o : p.odpowiedzi) {
+                CheckBox cb = new CheckBox(this);
+                cb.setText(o);
+                kontener.addView(cb);
+            }
+        }
+
+        // Zadanie 1 — zmiana tekstu przycisku
+        if (indeks == listaPytan.size() - 1) {
+            przycisk.setText("Zakończ quiz");
+        } else {
+            przycisk.setText("Sprawdź odpowiedź");
+        }
+    }
+
+    private void sprawdz() {
+        Pytanie p = listaPytan.get(indeks);
+
+        // Blokada wielokrotnego klikania
+        przycisk.setEnabled(false);
+
+        if (!p.czyWielokrotnyWybor) {
+            // JEDNA ODPOWIEDŹ
+            int wybrany = -1;
+
+            for (int i = 0; i < kontener.getChildCount(); i++) {
+                View v = kontener.getChildAt(i);
+                if (v instanceof RadioButton && ((RadioButton) v).isChecked()) {
+                    wybrany = i;
+                }
+            }
+
+            if (wybrany == -1) {
+                przycisk.setEnabled(true);
+                return;
+            }
+
+            if (wybrany == p.indeksPoprawnej) {
+                wynik++;
+                kontener.getChildAt(wybrany).setBackgroundColor(Color.GREEN);
+            } else {
+                kontener.getChildAt(wybrany).setBackgroundColor(Color.RED);
+                kontener.getChildAt(p.indeksPoprawnej).setBackgroundColor(Color.GREEN);
+            }
+
+        } else {
+            // WIELE ODPOWIEDZI
+            ArrayList<Integer> wybrane = new ArrayList<>();
+
+            for (int i = 0; i < kontener.getChildCount(); i++) {
+                View v = kontener.getChildAt(i);
+                if (v instanceof CheckBox && ((CheckBox) v).isChecked()) {
+                    wybrane.add(i);
+                }
+            }
+
+            boolean poprawne = wybrane.equals(p.poprawneWiele);
+
+            for (int i = 0; i < kontener.getChildCount(); i++) {
+                if (p.poprawneWiele.contains(i)) {
+                    kontener.getChildAt(i).setBackgroundColor(Color.GREEN);
+                } else if (wybrane.contains(i)) {
+                    kontener.getChildAt(i).setBackgroundColor(Color.RED);
+                }
+            }
+
+            if (poprawne) wynik++;
+        }
+
+        tekstWynik.setText("Wynik: " + wynik);
+
+        handler.postDelayed(() -> {
+            indeks++;
+            if (indeks < listaPytan.size()) {
+                wyswietlPytanie();
+                przycisk.setEnabled(true);
+            } else {
+                wyswietlKoniec();
+            }
+        }, 1000);
+    }
+
+    private void wyswietlKoniec() {
+        kontener.setVisibility(View.GONE);
+        przycisk.setVisibility(View.GONE);
+
+        tekstTresc.setText("Koniec quizu! Twój wynik: " + wynik + "/" + listaPytan.size());
+        przyciskReset.setVisibility(View.VISIBLE);
+    }
+
+    private void reset() {
+        indeks = 0;
+        wynik = 0;
+
+        kontener.setVisibility(View.VISIBLE);
+        przycisk.setVisibility(View.VISIBLE);
+        przyciskReset.setVisibility(View.GONE);
+
+        tekstWynik.setText("Wynik: 0");
+
+        wyswietlPytanie();
+    }
+}
+-------------------------
+pytanie.java
+package com.example.prostyquiz;
+
+import java.util.ArrayList;
+
+public class Pytanie {
+    String tresc;
+    ArrayList<String> odpowiedzi;
+    int indeksPoprawnej; // używane przy pojedynczym wyborze
+    boolean czyWielokrotnyWybor;
+    ArrayList<Integer> poprawneWiele; // poprawne odpowiedzi gdy wielokrotny wybór
+
+    // Konstruktor – pojedynczy wybór
+    public Pytanie(String tresc, ArrayList<String> odpowiedzi, int indeksPoprawnej) {
+        this.tresc = tresc;
+        this.odpowiedzi = odpowiedzi;
+        this.indeksPoprawnej = indeksPoprawnej;
+        this.czyWielokrotnyWybor = false;
+        this.poprawneWiele = new ArrayList<>();
+    }
+
+    // Konstruktor – wiele poprawnych odpowiedzi
+    public Pytanie(String tresc, ArrayList<String> odpowiedzi, ArrayList<Integer> poprawneWiele) {
+        this.tresc = tresc;
+        this.odpowiedzi = odpowiedzi;
+        this.czyWielokrotnyWybor = true;
+        this.poprawneWiele = poprawneWiele;
+    }
+}
