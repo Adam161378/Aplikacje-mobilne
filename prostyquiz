@@ -1,172 +1,264 @@
 xml:
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tekstNumerPytania"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        style="@style/TekstNaglowek"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tekstTrescPytania"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:paddingTop="12dp" />
+        style="@style/TekstPytanie"/>
 
-    <LinearLayout
-        android:id="@+id/kontenerOdpowiedzi"
+    <RadioGroup
+        android:id="@+id/radioGroupOdpowiedzi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="12dp" />
+        android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/przyciskSprawdz"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sprawdź odpowiedź" />
+        android:id="@+id/przyciskDalej"
+        style="@style/Przycisk"
+        android:text="Dalej"/>
 
     <Button
-        android:id="@+id/przyciskReset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/przyciskRestart"
+        style="@style/Przycisk"
         android:text="Zagraj ponownie"
-        android:visibility="gone"
-        android:paddingTop="12dp" />
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tekstWynik"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:paddingTop="16dp" />
+        style="@style/TekstWynik"/>
 
 </LinearLayout>
-
 ----------------------------------------------
 java:
-package com.example.myapplication;
+package com.example.losowepytania;
 
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.TextView;
-
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
-    public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-        ArrayList<Pytanie> listaPytan = new ArrayList<>();
-        int indeks = 0;
-        int wynik = 0;
+    TextView tekstNumerPytania, tekstTrescPytania, tekstWynik;
+    RadioGroup radioGroupOdpowiedzi;
+    Button przyciskDalej, przyciskRestart;
+    ProgressBar progressBar;
 
-        TextView tekstNumer, tekstTresc, tekstWynik;
-        LinearLayout kontener;
-        Button przycisk, przyciskReset;
+    ArrayList<Pytanie> listaPytan = new ArrayList<>();
+    ArrayList<Integer> odpowiedziUzytkownika = new ArrayList<>();
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            EdgeToEdge.enable(this);
-            setContentView(R.layout.activity_main);
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            });
-        }
+    int aktualnyIndeksPytania = 0;
+    int wynik = 0;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+    long czasStart;
 
-            tekstNumer = findViewById(R.id.tekstNumerPytania);
-            tekstTresc = findViewById(R.id.tekstTrescPytania);
-            tekstWynik = findViewById(R.id.tekstWynik);
-            kontener = findViewById(R.id.kontenerOdpowiedzi);
-            przycisk = findViewById(R.id.przyciskSprawdz);
-            przyciskReset = findViewById(R.id.przyciskReset);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-            przygotujPytania();
-            wyswietlPytanie();
+        tekstNumerPytania = findViewById(R.id.tekstNumerPytania);
+        tekstTrescPytania = findViewById(R.id.tekstTrescPytania);
+        tekstWynik = findViewById(R.id.tekstWynik);
+        radioGroupOdpowiedzi = findViewById(R.id.radioGroupOdpowiedzi);
+        przyciskDalej = findViewById(R.id.przyciskDalej);
+        przyciskRestart = findViewById(R.id.przyciskRestart);
+        progressBar = findViewById(R.id.progressBar);
 
-            przycisk.setOnClickListener(view -> sprawdz());
+        przygotujPytania();
+        progressBar.setMax(listaPytan.size());
 
-            przyciskReset.setOnClickListener(v -> reset());
-        }
+        czasStart = System.currentTimeMillis();
+        wyswietlPytanie();
 
-        public void przygotujPytania(View view) {
-            ArrayList<String> o1 = new ArrayList<>();
-            o1.add("2");
-            o1.add("4");
-            o1.add("8");
-            listaPytan.add(new Pytanie("Ile to 2+2?", o1, 1));
+        przyciskDalej.setOnClickListener(v -> zapiszIOdepnij());
+        przyciskRestart.setOnClickListener(v -> restartQuizu());
+    }
 
-            ArrayList<String> o2 = new ArrayList<>();
-            o2.add("Warszawa");
-            o2.add("Kraków");
-            o2.add("Gdańsk");
-            listaPytan.add(new Pytanie("Stolica Polski:", o2, 0));
+    private void przygotujPytania() {
+        listaPytan.add(new Pytanie(
+                "Język Androida?",
+                new ArrayList<String>() {{
+                    add("Java");
+                    add("Kotlin");
+                    add("C++");
+                }},
+                1
+        ));
 
-            ArrayList<String> o3 = new ArrayList<>();
-            o3.add("Czerwony");
-            o3.add("Niebieski");
-            o3.add("Zielony");
-            ArrayList<Integer> poprawne = new ArrayList<>();
-            poprawne.add(1);
-            poprawne.add(2);
-            listaPytan.add(new Pytanie("Które kolory są zimne?", o3, poprawne)); // wielokrotny wybór
-        }
+        listaPytan.add(new Pytanie(
+                "Kontener RadioButtonów?",
+                new ArrayList<String>() {{
+                    add("LinearLayout");
+                    add("RadioGroup");
+                    add("TextView");
+                }},
+                1
+        ));
 
-        private void sprawdz() {
-           
+        listaPytan.add(new Pytanie(
+                "Typ logiczny?",
+                new ArrayList<String>() {{
+                    add("int");
+                    add("String");
+                    add("boolean");
+                }},
+                2
+        ));
+    }
+
+    private void wyswietlPytanie() {
+        radioGroupOdpowiedzi.removeAllViews();
+        radioGroupOdpowiedzi.clearCheck();
+
+        Pytanie p = listaPytan.get(aktualnyIndeksPytania);
+
+        tekstNumerPytania.setText(
+                "Pytanie " + (aktualnyIndeksPytania + 1) + "/" + listaPytan.size()
+        );
+        tekstTrescPytania.setText(p.getTresc());
+        tekstWynik.setText("Wynik: " + wynik);
+
+        progressBar.setProgress(aktualnyIndeksPytania + 1);
+
+        for (String odp : p.getOdpowiedzi()) {
+            RadioButton rb = new RadioButton(this);
+            rb.setText(odp);
+            rb.setEnabled(true);
+            rb.setBackgroundColor(0x00000000);
+            radioGroupOdpowiedzi.addView(rb);
         }
     }
 
+    private void zapiszIOdepnij() {
+        int zaznaczoneId = radioGroupOdpowiedzi.getCheckedRadioButtonId();
+        if (zaznaczoneId == -1) {
+            Toast.makeText(this, "Zaznacz odpowiedź", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        View zaznaczony = findViewById(zaznaczoneId);
+        int indeks = radioGroupOdpowiedzi.indexOfChild(zaznaczony);
+        odpowiedziUzytkownika.add(indeks);
+
+        aktualnyIndeksPytania++;
+
+        if (aktualnyIndeksPytania < listaPytan.size()) {
+            wyswietlPytanie();
+        } else {
+            wyswietlWynikKoncowy();
+        }
+    }
+
+    private void wyswietlWynikKoncowy() {
+        radioGroupOdpowiedzi.setVisibility(View.GONE);
+        przyciskDalej.setVisibility(View.GONE);
+        przyciskRestart.setVisibility(View.VISIBLE);
+
+        for (int i = 0; i < listaPytan.size(); i++) {
+            if (odpowiedziUzytkownika.get(i)
+                    == listaPytan.get(i).getIndeksPoprawnej()) {
+                wynik++;
+            }
+        }
+
+        long czasKoniec = System.currentTimeMillis();
+        long sekundy = (czasKoniec - czasStart) / 1000;
+
+        tekstTrescPytania.setText(
+                "Koniec quizu!\nWynik: " + wynik + "/" + listaPytan.size()
+                        + "\nCzas: " + sekundy + " s"
+        );
+    }
+
+    private void restartQuizu() {
+        wynik = 0;
+        aktualnyIndeksPytania = 0;
+        odpowiedziUzytkownika.clear();
+        czasStart = System.currentTimeMillis();
+
+        radioGroupOdpowiedzi.setVisibility(View.VISIBLE);
+        przyciskDalej.setVisibility(View.VISIBLE);
+        przyciskRestart.setVisibility(View.GONE);
+
+        wyswietlPytanie();
+    }
+}
+
 -------------------------
 pytanie.java
-package com.example.prostyquiz;
+package com.example.losowepytania;
 
 import java.util.ArrayList;
 
 public class Pytanie {
-    String tresc;
-    ArrayList<String> odpowiedzi;
-    int indeksPoprawnej; 
-    boolean czyWielokrotnyWybor;
-    ArrayList<Integer> poprawneWiele; 
 
-  
+    private String tresc;
+    private ArrayList<String> odpowiedzi;
+    private int indeksPoprawnej;
+
     public Pytanie(String tresc, ArrayList<String> odpowiedzi, int indeksPoprawnej) {
         this.tresc = tresc;
         this.odpowiedzi = odpowiedzi;
         this.indeksPoprawnej = indeksPoprawnej;
-        this.czyWielokrotnyWybor = false;
-        this.poprawneWiele = new ArrayList<>();
     }
 
- 
-    public Pytanie(String tresc, ArrayList<String> odpowiedzi, ArrayList<Integer> poprawneWiele) {
-        this.tresc = tresc;
-        this.odpowiedzi = odpowiedzi;
-        this.czyWielokrotnyWybor = true;
-        this.poprawneWiele = poprawneWiele;
+    public String getTresc() {
+        return tresc;
+    }
+
+    public ArrayList<String> getOdpowiedzi() {
+        return odpowiedzi;
+    }
+
+    public int getIndeksPoprawnej() {
+        return indeksPoprawnej;
     }
 }
+
+--------------------------------
+themes:
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.ProstyQuiz" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">#FFFFFF</item>
+    </style>
+
+    <style name="TekstNaglowek">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TekstPytanie">
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="TekstWynik">
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">12dp</item>
+    </style>
+
+    <style name="Przycisk">
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+</resources>
