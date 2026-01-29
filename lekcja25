@@ -1,0 +1,94 @@
+mainactivity:
+package com.example.lifecyclespy;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "LifecycleSpy";
+
+    // Licznik uruchomień Activity
+    private static int licznikUruchomien = 0;
+
+    private TextView statusTextView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        licznikUruchomien++;
+
+        statusTextView = findViewById(R.id.statusTextView);
+
+        Log.d(TAG, "onCreate() wywołane po raz: " + licznikUruchomien);
+        statusTextView.setText("Stan: onCreate()");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() wywołane");
+        statusTextView.setText("Stan: onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() wywołane");
+        statusTextView.setText("Stan: onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() wywołane");
+        statusTextView.setText("Stan: onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() wywołane");
+        // Zmiana tekstu nie będzie widoczna – Activity jest niewidoczna
+        statusTextView.setText("Stan: onStop()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart() wywołane");
+        statusTextView.setText("Stan: onRestart()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() wywołane");
+        // Zmiana tekstu nie będzie widoczna – Activity jest niszczona
+        statusTextView.setText("Stan: onDestroy()");
+    }
+}
+
+xml:'
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stan: brak"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
