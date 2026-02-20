@@ -1,0 +1,232 @@
+main: 
+package com.example.loginawigacji;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    // Wspólny TAG dla obu aktywności ułatwi filtrowanie
+    private static final String TAG = "TestCyklu";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button btnDalej = findViewById(R.id.btnDalej);
+        Button zamknij = findViewById(R.id.Zamknij);
+
+        btnDalej.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, DrugaActivity.class);
+            startActivity(intent);
+        });
+  //Tak onDestroy wywolane
+        zamknij.setOnClickListener(v -> {
+            finish();
+        });
+
+        Log.d(TAG, "MAIN: onCreate");
+    }
+  //Onrestart wystepuje przed onStart();
+
+    @Override protected void onStart() { super.onStart(); Log.d(TAG, "MAIN: onStart"); }
+    @Override protected void onResume() { super.onResume(); Log.d(TAG, "MAIN: onResume"); }
+    @Override protected void onPause() { super.onPause(); Log.d(TAG, "MAIN: onPause"); }
+    @Override protected void onStop() { super.onStop(); Log.d(TAG, "MAIN: onStop"); }
+    @Override protected void onRestart() { super.onRestart(); Log.d(TAG, "MAIN: onRestart"); }
+    @Override protected void onDestroy() { super.onDestroy(); Log.d(TAG, "MAIN: onDestroy"); }
+}
+xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="#E23131">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDalej"
+        android:text="Dalej"
+/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Zamknij"
+        android:text="Zamknij"
+        />
+</LinearLayout>
+-------------------------------------------------
+second:
+package com.example.loginawigacji;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+
+public class DrugaActivity extends AppCompatActivity {
+
+    private static final String TAG = "TestCyklu";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_druga);
+
+        Button btnWroc = findViewById(R.id.btnWroc); // Dodaj w XML!
+        Button dalej = findViewById(R.id.Dodrugiej);
+  //Jest onCreate ponieważ, startActivity tworzy actywnosc a nie ja wznawia
+
+  //Wywołało onpause, poniewaz secondActivity jest na wierzchu a nie jako inna.
+
+        btnWroc.setOnClickListener(v -> {
+  // finish() programowo zamyka aktywność (działa jak strzałka wstecz)\
+  // finish();
+
+            startActivity(new Intent(this, MainActivity.class));
+        });
+
+        dalej.setOnClickListener(v -> {
+            Intent intent = new Intent(DrugaActivity.this, TrzeciaActivity.class);
+            startActivity(intent);
+        });
+
+        Log.d(TAG, "DRUGA: onCreate");
+    }
+
+    @Override protected void onStart() { super.onStart(); Log.d(TAG, "DRUGA: onStart"); }
+    @Override protected void onResume() { super.onResume(); Log.d(TAG, "DRUGA: onResume"); }
+    @Override protected void onPause() { super.onPause(); Log.d(TAG, "DRUGA: onPause"); }
+    @Override protected void onStop() { super.onStop(); Log.d(TAG, "DRUGA: onStop"); }
+    @Override protected void onRestart() { super.onRestart(); Log.d(TAG, "DRUGA: onRestart"); }
+    @Override protected void onDestroy() { super.onDestroy(); Log.d(TAG, "DRUGA: onDestroy"); }
+}
+sxml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".DrugaActivity"
+    android:background="@color/lightblue">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnWroc"
+        android:text="Wróc"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Dodrugiej"
+        android:text="Idz do drugiej"
+        />
+</LinearLayout>
+----------------------------------------------
+trzecia:
+package com.example.loginawigacji;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+
+public class TrzeciaActivity extends AppCompatActivity {
+
+    private static final String TAG = "TestCyklu";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trzecia);
+
+        Button btndalej = findViewById(R.id.btnTrzecia);
+
+        btndalej.setOnClickListener(v -> {
+            Intent intent = new Intent(TrzeciaActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        Log.d(TAG, "Trzecia: onCreate");
+    }
+//Main znajduje się w stanie Onstop.
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "Trzecia: onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "Trzecia: onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "Trzecia: onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "Trzecia: onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "Trzecia: onRestart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Trzecia: onDestroy");
+    }
+}
+
+txml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".TrzeciaActivity"
+    android:background="#9FE65B">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnTrzecia"
+        android:text="Idz do main"
+/>
+</LinearLayout>
+
