@@ -1,0 +1,461 @@
+activityu_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tekstNaglowek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dodaj wydatek"
+        android:textStyle="bold"
+        android:textColor="@color/textDark"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/poleNazwaWydatku"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Nazwa"
+        app:layout_constraintTop_toBottomOf="@id/tekstNaglowek"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/poleKwotaWydatku"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Kwota"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/poleNazwaWydatku"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Spinner
+        android:id="@+id/spinnerKategoria"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/kategorie_wydatkow"
+        app:layout_constraintTop_toBottomOf="@id/poleKwotaWydatku"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/przyciskZapisz"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Zapisz"
+        android:backgroundTint="@color/primary"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/spinnerKategoria"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tekstPodsumowanie"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Wydatki: 0 | Suma: 0 zł"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/przyciskZapisz"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tekstPustaLista"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Brak wydatków"
+        app:layout_constraintTop_toBottomOf="@id/tekstPodsumowanie"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listaWydatkow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tekstPustaLista"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tekstLiczbaWydatkow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="276dp"
+        android:text="Liczba: 0"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/przyciskZapisz" />
+
+    <TextView
+        android:id="@+id/tekstSumaWydatkow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="328dp"
+        android:text="Suma: 0 zł"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tekstLiczbaWydatkow" />
+
+    <TextView
+        android:id="@+id/tekstNajdrozszy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="316dp"
+        android:text="Najdroższy: -"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tekstSumaWydatkow" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+item.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tekstNazwa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/textDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tekstKwota"/>
+
+        <TextView
+            android:id="@+id/tekstKategoria"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tekstNazwa"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tekstKwota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/danger"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/przyciskUsun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuń"
+            android:backgroundTint="@color/danger"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/tekstKwota"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+mainActivity.java:
+package com.example.menedzerwydatkow;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity
+        implements View.OnClickListener, WydatekAdapter.OnWydatekActionListener {
+
+    private static final String KEY_LISTA = "lista_wydatkow";
+
+    private ArrayList<Wydatek> lista = new ArrayList<>();
+
+    private EditText nazwa, kwota;
+    private Spinner spinner;
+
+    private TextView liczbaTxt, sumaTxt, najdrozszyTxt;
+
+    private RecyclerView recycler;
+    private WydatekAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // --- UI ---
+        nazwa = findViewById(R.id.poleNazwaWydatku);
+        kwota = findViewById(R.id.poleKwotaWydatku);
+        spinner = findViewById(R.id.spinnerKategoria);
+
+        liczbaTxt = findViewById(R.id.tekstLiczbaWydatkow);
+        sumaTxt = findViewById(R.id.tekstSumaWydatkow);
+        najdrozszyTxt = findViewById(R.id.tekstNajdrozszy);
+
+        recycler = findViewById(R.id.listaWydatkow);
+
+        Button btn = findViewById(R.id.przyciskZapisz);
+
+        // --- RESTORE STATE ---
+        if (savedInstanceState != null) {
+            lista = (ArrayList<Wydatek>) savedInstanceState.getSerializable(KEY_LISTA);
+            if (lista == null) lista = new ArrayList<>();
+        }
+
+        // --- ADAPTER ---
+        adapter = new WydatekAdapter(lista, this);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setAdapter(adapter);
+
+        btn.setOnClickListener(this);
+
+        odswiezPodsumowanie();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        String n = nazwa.getText().toString().trim();
+        String k = kwota.getText().toString().trim();
+        String kat = spinner.getSelectedItem().toString();
+
+        if (n.isEmpty() || k.isEmpty()) {
+            Toast.makeText(this, "Uzupełnij pola", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double kw;
+        try {
+            kw = Double.parseDouble(k);
+        } catch (Exception e) {
+            Toast.makeText(this, "Zła kwota", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        lista.add(new Wydatek(n, kw, kat));
+        adapter.notifyItemInserted(lista.size() - 1);
+
+        wyczysc();
+        odswiezPodsumowanie();
+
+        recycler.smoothScrollToPosition(lista.size() - 1);
+    }
+
+    @Override
+    public void onDeleteClicked(int position) {
+        if (position < 0 || position >= lista.size()) return;
+
+        lista.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        odswiezPodsumowanie();
+    }
+
+    @Override
+    public void onItemClicked(Wydatek w) {
+        Toast.makeText(this, w.getNazwa(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void odswiezPodsumowanie() {
+
+        double suma = 0;
+        Wydatek najdrozszy = null;
+
+        for (Wydatek w : lista) {
+            suma += w.getKwota();
+
+            if (najdrozszy == null || w.getKwota() > najdrozszy.getKwota()) {
+                najdrozszy = w;
+            }
+        }
+
+        liczbaTxt.setText("Liczba: " + lista.size());
+        sumaTxt.setText("Suma: " + String.format(Locale.getDefault(), "%.2f zł", suma));
+
+        if (najdrozszy == null) {
+            najdrozszyTxt.setText("Najdroższy: -");
+            najdrozszyTxt.setVisibility(View.GONE);
+        } else {
+            najdrozszyTxt.setVisibility(View.VISIBLE);
+            najdrozszyTxt.setText(
+                    "Najdroższy: " + najdrozszy.getNazwa()
+                            + " (" + najdrozszy.getKwota() + " zł)"
+            );
+        }
+    }
+
+    private void wyczysc() {
+        nazwa.setText("");
+        kwota.setText("");
+        spinner.setSelection(0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(KEY_LISTA, lista);
+    }
+}
+wydatek.java
+package com.example.menedzerwydatkow;
+
+import java.io.Serializable;
+
+public class Wydatek implements Serializable {
+
+    private String nazwa;
+    private double kwota;
+    private String kategoria;
+
+    public Wydatek(String nazwa, double kwota, String kategoria) {
+        this.nazwa = nazwa;
+        this.kwota = kwota;
+        this.kategoria = kategoria;
+    }
+
+    public String getNazwa() {
+        return nazwa;
+    }
+
+    public double getKwota() {
+        return kwota;
+    }
+
+    public String getKategoria() {
+        return kategoria;
+    }
+}
+
+adapter.java
+package com.example.menedzerwydatkow;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class WydatekAdapter extends RecyclerView.Adapter<WydatekAdapter.VH> {
+
+    private final ArrayList<Wydatek> lista;
+    private final OnWydatekActionListener listener;
+
+    public interface OnWydatekActionListener {
+        void onDeleteClicked(int position);
+        void onItemClicked(Wydatek wydatek);
+    }
+
+    public WydatekAdapter(ArrayList<Wydatek> lista, OnWydatekActionListener listener) {
+        this.lista = lista;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_wydatek, parent, false);
+        return new VH(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull VH h, int pos) {
+
+        Wydatek w = lista.get(pos);
+
+        h.nazwa.setText(w.getNazwa());
+        h.kategoria.setText(w.getKategoria());
+        h.kwota.setText(String.format(Locale.getDefault(), "%.2f zł", w.getKwota()));
+
+        h.itemView.setOnClickListener(v ->
+                listener.onItemClicked(w));
+
+        h.usun.setOnClickListener(v ->
+                listener.onDeleteClicked(h.getAdapterPosition()));
+    }
+
+    @Override
+    public int getItemCount() {
+        return lista.size();
+    }
+
+    public static class VH extends RecyclerView.ViewHolder {
+
+        TextView nazwa, kategoria, kwota;
+        Button usun;
+
+        public VH(@NonNull View itemView) {
+            super(itemView);
+
+            nazwa = itemView.findViewById(R.id.tekstNazwa);
+            kategoria = itemView.findViewById(R.id.tekstKategoria);
+            kwota = itemView.findViewById(R.id.tekstKwota);
+            usun = itemView.findViewById(R.id.przyciskUsun);
+        }
+    }
+}
+strings.xml:
+<resources>
+    <string name="app_name">MenedzerWydatkow</string>
+    <string name="zapisz_wydatek">Zapisz</string>
+
+    <string-array name="kategorie_wydatkow">
+        <item>Jedzenie</item>
+        <item>Transport</item>
+        <item>Rachunki</item>
+        <item>Rozrywka</item>
+        <item>Inne</item>
+    </string-array>
+</resources>
+
+colors.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#F5F7FA</color>
+    <color name="primary">#4CAF50</color>
+    <color name="danger">#E53935</color>
+    <color name="textDark">#212121</color>
+</resources>
