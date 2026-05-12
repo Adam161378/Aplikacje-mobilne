@@ -1,0 +1,261 @@
+MainActivity:
+package com.example.kreatorfiszekiquiz;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText pytanie = findViewById(R.id.pytanie);
+
+    EditText odpowiedz = findViewById(R.id.odpowiedz);
+
+    ListView listview;
+    ArrayList<String> fiszki = new ArrayList<>();
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,fiszki);
+    String question = pytanie.getText().toString();
+    String answer = odpowiedz.getText().toString();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+        }
+
+    public void dodajFiszke(View view) {
+        adapter Adapter = new adapter(this, fiszki);
+
+        listview = findViewById(R.id.listaPytan);
+
+
+
+
+
+        if(Objects.equals(question, "")){
+            Toast.makeText(this, "Uzytkownik wprowadzil puste pytanie", Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            fiszki.add(question);
+            Adapter.notifyDataSetChanged();
+        }
+
+        if (Objects.equals(answer, "")) {
+            Toast.makeText(this, "Uzytkownik wprowadzil pusta odpowiedz", Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            fiszki.add(answer);
+            Adapter.notifyDataSetChanged();
+        }
+
+        pytanie.setText("");
+        odpowiedz.setText("");
+
+        wyswietlListe();
+    }
+
+    public void wyswietlListe(){
+        listview = findViewById(R.id.listaPytan);
+        StringBuilder tekstListy = new StringBuilder();
+
+        for(String fiszka : fiszki){
+        tekstListy.append(fiszka).append("\n");
+        }
+
+        listview.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+
+}
+-----------------------------------
+activity.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+<TextView
+    android:id="@+id/fiszka"
+    android:text="Tryb fiszek"
+    style="@style/fiszka"
+    android:gravity="center"
+    />
+
+    <EditText
+        style="@style/fiszka"
+        android:hint="Wprowadź pytanie"
+        android:id="@+id/pytanie"
+        />
+
+    <EditText
+        style="@style/fiszka"
+        android:id="@+id/odpowiedz"
+        android:hint="Wprowadz odpowiedz"
+        />
+
+    <Button
+       style="@style/fiszka"
+        android:textColor="@color/white"
+        android:text="Dodaj"
+        android:id="@+id/dodaj"
+        android:onClick="dodajFiszke"
+        />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listaPytan"
+        style="@style/fiszka"
+        />
+</LinearLayout>
+
+------------------------------------------
+adapter.java
+package com.example.kreatorfiszekiquiz;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+
+public class adapter extends ArrayAdapter<fiszka> {
+
+    private final LayoutInflater inflater;
+
+    public adapter(@NonNull Context context, @NonNull ArrayList<String> fiszki) {
+        super(context, 0);
+        inflater = LayoutInflater.from(context);
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // Recykling widoków dla wydajności
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.activity_main, parent, false);
+        }
+
+        // Pobranie elementu z listy
+        fiszka fiszka = getItem(position);
+        fiszka.getPytanie();
+        fiszka.getOdpowiedz();
+return convertView;
+    }
+}
+
+
+-----------------------------------------
+fiszka.java
+package com.example.kreatorfiszekiquiz;
+
+public class fiszka {
+    String pytanie;
+    String odpowiedz;
+    String definicja;
+    String pojecie;
+
+    public  fiszka(String pytanie, String odpowiedz, String definicja, String pojecie){
+        this.pytanie = pytanie;
+        this.odpowiedz = odpowiedz;
+        this.definicja = definicja;
+        this.pojecie = pojecie;
+    }
+
+    public String getPytanie(){
+        return pytanie;
+    }
+
+    public String getOdpowiedz(){
+        return  odpowiedz;
+    }
+
+    public String getDefinicja(){
+        return definicja;
+    }
+    public String getPojecie(){
+        return  pojecie;
+    }
+
+    @Override
+    public String toString() {
+        return "Pytanie: " + pytanie + " | Odp: " + odpowiedz;
+    }
+}
+
+--------------------------------------------------
+
+themes.xml
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.KreatorFiszekiQuiz" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.KreatorFiszekiQuiz" parent="Base.Theme.KreatorFiszekiQuiz" />
+
+    <style name="fiszka">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+</resources>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
