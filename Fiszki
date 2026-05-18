@@ -91,47 +91,97 @@ public class MainActivity extends AppCompatActivity {
 -----------------------------------
 activity.xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<TextView
-    android:id="@+id/fiszka"
-    android:text="Tryb fiszek"
-    style="@style/fiszka"
-    android:gravity="center"
-    />
+    <!-- ========================= -->
+    <!-- SEKCJA KREATORA FISZEK -->
+    <!-- ========================= -->
 
-    <EditText
-        style="@style/fiszka"
-        android:hint="Wprowadź pytanie"
-        android:id="@+id/pytanie"
-        />
+    <LinearLayout
+        android:id="@+id/sekcjaKreatora"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        style="@style/fiszka"
-        android:id="@+id/odpowiedz"
-        android:hint="Wprowadz odpowiedz"
-        />
+        <EditText
+            android:id="@+id/etPytanie"
+            android:hint="Pytanie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <Button
-       style="@style/fiszka"
-        android:textColor="@color/white"
-        android:text="Dodaj"
-        android:id="@+id/dodaj"
-        android:onClick="dodajFiszke"
-        />
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listaPytan"
-        style="@style/fiszka"
-        />
+        <EditText
+            android:id="@+id/etOdpowiedz"
+            android:hint="Odpowiedź"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnDodaj"
+            android:text="Dodaj fiszkę"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnStartQuiz"
+            android:text="Rozpocznij Quiz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <!-- ========================= -->
+    <!-- SEKCJA QUIZU -->
+    <!-- ========================= -->
+
+    <LinearLayout
+        android:id="@+id/sekcjaQuizu"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvPytanieQuiz"
+            android:text="Pytanie"
+            android:textSize="22sp"
+            android:paddingBottom="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/etOdpowiedzQuiz"
+            android:hint="Twoja odpowiedź"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnSprawdz"
+            android:text="Sprawdź odpowiedź"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnKoniecQuiz"
+            android:text="Zakończ Quiz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 </LinearLayout>
 
 ------------------------------------------
@@ -143,6 +193,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -153,84 +204,99 @@ public class adapter extends ArrayAdapter<fiszka> {
 
     private final LayoutInflater inflater;
 
-    public adapter(@NonNull Context context, @NonNull ArrayList<String> fiszki) {
-        super(context, 0);
+    public adapter(@NonNull Context context,
+                   @NonNull ArrayList<fiszka> fiszki) {
+
+        super(context, 0, fiszki);
         inflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Recykling widoków dla wydajności
+    public View getView(int position,
+                        @Nullable View convertView,
+                        @NonNull ViewGroup parent) {
+
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.activity_main, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.row_fiszka,
+                    parent,
+                    false
+            );
         }
 
-        // Pobranie elementu z listy
-        fiszka fiszka = getItem(position);
-        fiszka.getPytanie();
-        fiszka.getOdpowiedz();
-return convertView;
+        fiszka f = getItem(position);
+
+        TextView tvPytanie =
+                convertView.findViewById(R.id.tvPytanie);
+
+        TextView tvOdpowiedz =
+                convertView.findViewById(R.id.tvOdpowiedz);
+
+        if (f != null) {
+            tvPytanie.setText(f.getPytanie());
+            tvOdpowiedz.setText(f.getOdpowiedz());
+        }
+
+        return convertView;
     }
 }
 
-
 -----------------------------------------
-fiszka.java
-package com.example.kreatorfiszekiquiz;
+package com.example.fiszki;
 
-public class fiszka {
-    String pytanie;
-    String odpowiedz;
-    String definicja;
-    String pojecie;
+public class Fiszka {
 
-    public  fiszka(String pytanie, String odpowiedz, String definicja, String pojecie){
+    private String pytanie;
+    private String odpowiedz;
+
+    public Fiszka(String pytanie, String odpowiedz) {
         this.pytanie = pytanie;
         this.odpowiedz = odpowiedz;
-        this.definicja = definicja;
-        this.pojecie = pojecie;
     }
 
-    public String getPytanie(){
+    public String getPytanie() {
         return pytanie;
     }
 
-    public String getOdpowiedz(){
-        return  odpowiedz;
-    }
-
-    public String getDefinicja(){
-        return definicja;
-    }
-    public String getPojecie(){
-        return  pojecie;
+    public String getOdpowiedz() {
+        return odpowiedz;
     }
 
     @Override
     public String toString() {
-        return "Pytanie: " + pytanie + " | Odp: " + odpowiedz;
+        return pytanie + " → " + odpowiedz;
     }
 }
+
 
 --------------------------------------------------
 
 themes.xml
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.KreatorFiszekiQuiz" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- ===== THEME ===== -->
+    <style name="Base.Theme.KreatorFiszekiQuiz"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorSecondary">@color/purple_700</item>
+
     </style>
 
-    <style name="Theme.KreatorFiszekiQuiz" parent="Base.Theme.KreatorFiszekiQuiz" />
+    <style name="Theme.KreatorFiszekiQuiz"
+        parent="Base.Theme.KreatorFiszekiQuiz" />
 
-    <style name="fiszka">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">32sp</item>
+
+
+    <!-- ===== STYL TEKSTU FISZKI ===== -->
+    <style name="TextFiszka">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/text</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">6dp</item>
     </style>
+
 </resources>
 
 
